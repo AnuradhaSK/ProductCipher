@@ -5,7 +5,7 @@ public class Config {
     private static int blockSize = 5;
 
     //return the block size
-    public static int getBlockSize(){
+    public static int getBlockSize() {
         return blockSize;
     }
 

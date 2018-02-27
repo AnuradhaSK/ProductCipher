@@ -16,7 +16,7 @@ public class FileReader {
         ArrayList<String> returnList = new ArrayList();
 
         String currentLine;
-        while((currentLine= br.readLine()) != null){
+        while ((currentLine = br.readLine()) != null) {
             returnList.add(currentLine);
             System.out.println(currentLine);
         }

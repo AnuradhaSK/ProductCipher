@@ -1,9 +1,11 @@
 package Views;
 
+import Controllers.Decryptor;
 import Controllers.Encryptor;
 import Controllers.WindowRender;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,7 @@ public class MainWindow {
 
     private JFileChooser fileChooser = new JFileChooser();
 
+
     public MainWindow(){
 
         //Browser button performance
@@ -30,10 +33,13 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 //browse a file
+                FileNameExtensionFilter filter= new FileNameExtensionFilter("TEXT FILES","txt","text");
+                fileChooser.setFileFilter(filter);
                 int response = fileChooser.showOpenDialog(null);
                 System.out.println(response);
 
                 if(response == JFileChooser.APPROVE_OPTION){
+
                     fileField.setText(fileChooser.getSelectedFile().getName());
                 }
             }
@@ -53,9 +59,12 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 //show an error if a file has not been chosen
-                if(fileChooser.getSelectedFile()==null || secretKey.getText().length()==0){
+                if(fileChooser.getSelectedFile()==null || secretKey.getText().length()==0 || secretKey.getText().length()<8){
                     if(secretKey.getText().length()==0){
                         JOptionPane.showMessageDialog(window,"No secret key is inserted");
+                    }
+                    else if(secretKey.getText().length()<8){
+                        JOptionPane.showMessageDialog(window,"Enter a key with 8 or more characters");
                     }
                     else{
                         JOptionPane.showMessageDialog(window,"No file chosen");
@@ -65,10 +74,12 @@ public class MainWindow {
                 else{
                         File file= fileChooser.getSelectedFile();
                         String SecretString = secretKey.getText();
-                        System.out.println(SecretString);
+                        //System.out.println(SecretString);
                         Encryptor encryptor = new Encryptor();
                     try {
                         encryptor.encrypt(file,SecretString);
+                        fileField.setText("");
+                        secretKey.setText("");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -85,11 +96,27 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 //show an error if a file has not been chosen
-                if(fileChooser.getSelectedFile()==null){
-                    JOptionPane.showMessageDialog(window,"No file chosen");
+                if(fileChooser.getSelectedFile()==null || secretKey.getText().length()==0){
+                    if(secretKey.getText().length()==0){
+                        JOptionPane.showMessageDialog(window,"No secret key is inserted");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(window,"No file chosen");
+                    }
                 }
                 //call decryptor
                 else{
+                    File file= fileChooser.getSelectedFile();
+                    String SecretString = secretKey.getText();
+                    System.out.println(SecretString);
+                    Decryptor decryptor = new Decryptor();
+                    try {
+                        decryptor.decrypt(file,SecretString);
+                        fileField.setText("");
+                        secretKey.setText("");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             }
